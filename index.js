@@ -4,6 +4,8 @@
 const express = require('express')
 const puhLuettelo = express()
 
+puhLuettelo.use(express.json()) // Tämä on json-parseri eli middleware. Ilman tätä lisättävä muistiinpanon body olisi määrittelemätön
+
 let persons = [
       { 
         name: "Arto Hellas", 
@@ -61,7 +63,7 @@ puhLuettelo.get('/api/persons/:id', (request, response) => { // Kaksoispiste syn
 puhLuettelo.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
+    response.status(204).end() // Jos poisto onnistuu vastataan statuskoodilla 204
 })
 
 const generateId = () => {
@@ -73,16 +75,22 @@ const generateId = () => {
 
 puhLuettelo.post('/api/persons', (request, response) => {
     const body = request.body
-    if (!body.content) {
-        return response.status(400).json({
-            error: 'content missing'
+    if (!body.name || !body.number) {
+        return response.status(400).json({ // returnin kutsuminen on tärkeää, ilman sitä koodi jatkaisi suoritusta ja virheellinen muistiinpano tallentuisi!
+            error: 'name/number missing'
+        })
+    }
+    if (persons.find(name => name.name == body.name)) {
+        console.log('Löytyi')
+        return response.status(400).json({ // returnin kutsuminen on tärkeää, ilman sitä koodi jatkaisi suoritusta ja virheellinen muistiinpano tallentuisi!
+            error: 'name must be unique'
         })
     }
 
     const person = {
-        name: body.content,
-        number: body.content,
-        //id: generateId(),
+        name: body.name,
+        number: body.number,
+        id: generateId(),
     }
     persons = persons.concat(person)
     console.log(person)//Tämä ei toimi, tarkista henkilön lisäys
