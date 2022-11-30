@@ -40,10 +40,10 @@ const puhLuettelo = http.createServer((request, response) => { // Http-moduulin 
 })*/
 
 // Luodaan route urlit eri hauille:
-/*
+
 puhLuettelo.get('/', (request, response) => {
     response.send('<h1>This is my first backend experience!</h1>') // Lähettää sivulle otsikon
-})*/
+})
 
 puhLuettelo.get('/api/persons', (request, response) => {
     response.json(persons) // Json metodi palauttaa js-olion persons joka on taulukko
