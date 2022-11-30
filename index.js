@@ -2,9 +2,13 @@
 
 //const http = require('http'); // Ottaa käyttöön Noden sisäänrakennetun web-palvelimen määrittelevän moduulin
 const express = require('express')
+const morgan = require('morgan')
 const puhLuettelo = express()
+const cors = require('cors')
 
 puhLuettelo.use(express.json()) // Tämä on json-parseri eli middleware. Ilman tätä lisättävä muistiinpanon body olisi määrittelemätön
+puhLuettelo.use(morgan('tiny'))
+puhLuettelo.use(cors())
 
 let persons = [
       { 
@@ -75,6 +79,7 @@ const generateId = () => {
 
 puhLuettelo.post('/api/persons', (request, response) => {
     const body = request.body
+    console.log(body)
     if (!body.name || !body.number) {
         return response.status(400).json({ // returnin kutsuminen on tärkeää, ilman sitä koodi jatkaisi suoritusta ja virheellinen muistiinpano tallentuisi!
             error: 'name/number missing'
@@ -93,7 +98,7 @@ puhLuettelo.post('/api/persons', (request, response) => {
         id: generateId(),
     }
     persons = persons.concat(person)
-    console.log(person)//Tämä ei toimi, tarkista henkilön lisäys
+    console.log(person)
     response.json(person)
 })
 /*
