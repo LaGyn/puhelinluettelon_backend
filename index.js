@@ -9,6 +9,7 @@ const cors = require('cors')
 puhLuettelo.use(express.json()) // Tämä on json-parseri eli middleware. Ilman tätä lisättävä muistiinpanon body olisi määrittelemätön
 puhLuettelo.use(morgan('tiny'))
 puhLuettelo.use(cors())
+puhLuettelo.use(express.static('build'))
 
 let persons = [
       { 
@@ -39,10 +40,10 @@ const puhLuettelo = http.createServer((request, response) => { // Http-moduulin 
 })*/
 
 // Luodaan route urlit eri hauille:
-
+/*
 puhLuettelo.get('/', (request, response) => {
     response.send('<h1>This is my first backend experience!</h1>') // Lähettää sivulle otsikon
-})
+})*/
 
 puhLuettelo.get('/api/persons', (request, response) => {
     response.json(persons) // Json metodi palauttaa js-olion persons joka on taulukko
@@ -108,9 +109,11 @@ function getNumber(min, max){
 
 
 
-const PORT = 3001
-puhLuettelo.listen(PORT) // Muuttujaan puhLuettelo sijoitettu http-palvelin sidotaan kuuntelemaan porttiin tulevia pyyntöjä.
-console.log(`Server running at port ${PORT}`)
+const PORT = process.env.PORT || 3001
+puhLuettelo.listen(PORT, () => {
+    console.log(`Server running at port ${PORT}`)
+}) // Muuttujaan puhLuettelo sijoitettu http-palvelin sidotaan kuuntelemaan porttiin tulevia pyyntöjä.
+
 // Mikä ero on käyttää const express / const http??
 // Miksi käytetään osoitetta '/api/jotain...'?? Mitä tuo api meinaa?
 // Mikä tässä tarkalleen on se tapahtumankäsittelijä? request?
