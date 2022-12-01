@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build:ui": "rm -rf build && cd ../Full-Stack-Open/osa2/puhelinluettelo/ && npm run build && cp -r build ../puhelinluettelon_backend",
+    "deploy:full": "npm run build:ui && npm run deploy"    
   },
   "repository": {
     "type": "git",
