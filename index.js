@@ -109,7 +109,7 @@ function getNumber(min, max){
 
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 puhLuettelo.listen(PORT, () => {
     console.log(`Server running at port ${PORT}`)
 }) // Muuttujaan puhLuettelo sijoitettu http-palvelin sidotaan kuuntelemaan porttiin tulevia pyyntöjä.
