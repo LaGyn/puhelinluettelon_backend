@@ -97,14 +97,20 @@ puhLuettelo.post('/api/persons', (request, response) => {
         })
     }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    }
+        //id: generateId(),
+    })
+
+    person.save().then(savesPerson => {
+        response.json(savedPerson)
+    })
+
+    /*
     persons = persons.concat(person)
     console.log(person)
-    response.json(person)
+    response.json(person)*/
 })
 /*
 function getNumber(min, max){
