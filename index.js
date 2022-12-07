@@ -5,6 +5,8 @@ const express = require('express')
 const morgan = require('morgan')
 const puhLuettelo = express()
 const cors = require('cors')
+require('dotenv').config() // On tärkeää että tämä on ennen modelin note importtaamista
+const Person = require('./models/person') // muuttuja Person saa arvokseen saman olion, jonka moduuli määrittelee
 
 puhLuettelo.use(express.json()) // Tämä on json-parseri eli middleware. Ilman tätä lisättävä muistiinpanon body olisi määrittelemätön
 puhLuettelo.use(morgan('tiny'))
@@ -46,7 +48,9 @@ puhLuettelo.get('/', (request, response) => {
 })*/
 
 puhLuettelo.get('/api/persons', (request, response) => {
-    response.json(persons) // Json metodi palauttaa js-olion persons joka on taulukko
+    Person.find({}).then(persons => {
+        response.json(persons) // Json metodi palauttaa js-olion persons joka on taulukko
+    })
 })
 
 puhLuettelo.get('/info', (request, response) => {
@@ -107,13 +111,7 @@ function getNumber(min, max){
     return Math.floor(Math.random() * max);
 }*/
 
-
-
 const PORT = process.env.PORT || 3001
 puhLuettelo.listen(PORT, () => {
     console.log(`Server running at port ${PORT}`)
 }) // Muuttujaan puhLuettelo sijoitettu http-palvelin sidotaan kuuntelemaan porttiin tulevia pyyntöjä.
-
-// Mikä ero on käyttää const express / const http??
-// Miksi käytetään osoitetta '/api/jotain...'?? Mitä tuo api meinaa?
-// Mikä tässä tarkalleen on se tapahtumankäsittelijä? request?
