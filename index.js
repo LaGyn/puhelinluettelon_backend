@@ -69,10 +69,12 @@ puhLuettelo.get('/api/persons/:id', (request, response) => { // Kaksoispiste syn
     response.json(person)
 })
 
-puhLuettelo.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end() // Jos poisto onnistuu vastataan statuskoodilla 204
+puhLuettelo.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end() // Jos poisto onnistuu vastataan statuskoodilla 204
+        })
+        .catch(error => next(error))
 })
 
 const generateId = () => {
@@ -103,7 +105,7 @@ puhLuettelo.post('/api/persons', (request, response) => {
         //id: generateId(),
     })
 
-    person.save().then(savesPerson => {
+    person.save().then(savedPerson => {
         response.json(savedPerson)
     })
 
