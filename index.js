@@ -7,11 +7,19 @@ const puhLuettelo = express()
 const cors = require('cors')
 require('dotenv').config() // On tärkeää että tämä on ennen modelin note importtaamista
 const Person = require('./models/person') // muuttuja Person saa arvokseen saman olion, jonka moduuli määrittelee
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+  }
 
 puhLuettelo.use(express.json()) // Tämä on json-parseri eli middleware. Ilman tätä lisättävä muistiinpanon body olisi määrittelemätön
 puhLuettelo.use(morgan('tiny'))
 puhLuettelo.use(cors())
 puhLuettelo.use(express.static('build'))
+puhLuettelo.use(requestLogger) // on tärkeää että tämä otetaan käyttöön vasta jsonin jälkeen
 
 let persons = [
       { 
@@ -61,12 +69,20 @@ puhLuettelo.get('/info', (request, response) => {
                     <h3>${date}</h3>`) // HUOMIO muista backticillä!!
 })
 
-puhLuettelo.get('/api/persons/:id', (request, response) => { // Kaksoispiste syntaksilla määritellään parametri
-    const id = Number(request.params.id)
+puhLuettelo.get('/api/persons/:id', (request, response, next) => { // Kaksoispiste syntaksilla määritellään parametri
+    Person.findById(request.params.id).then(person => {
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+    })
+    .catch(error => next(error))
+    /*const id = Number(request.params.id)
     console.log(id)
     const person = persons.find(person => person.id === id)
     console.log(person)
-    response.json(person)
+    response.json(person)*/
 })
 
 puhLuettelo.delete('/api/persons/:id', (request, response, next) => {
@@ -114,10 +130,24 @@ puhLuettelo.post('/api/persons', (request, response) => {
     console.log(person)
     response.json(person)*/
 })
-/*
-function getNumber(min, max){
-    return Math.floor(Math.random() * max);
-}*/
+
+//Tärkeää että tämä on http get pyyntöjen jälkeen:
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+  // olemattomien osoitteiden käsittely
+  puhLuettelo.use(unknownEndpoint)
+  
+  const errorHandler = (error, request, response, next) => {
+    console.log(error.message)
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)
+  }
+  
+  // virheellisten pyyntöjen käsittely (tämä tulee kaikkien muiden middlewarejen rekisteröinnin jälkeen):
+  puhLuettelo.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 puhLuettelo.listen(PORT, () => {
