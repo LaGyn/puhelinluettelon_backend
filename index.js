@@ -62,7 +62,7 @@ puhLuettelo.get('/api/persons', (request, response) => {
 })
 
 puhLuettelo.get('/info', (request, response) => {
-    const lukumaara = persons.length;
+    const lukumaara = persons.length
     const date = new Date()
     console.log(lukumaara)
     response.send(`<h3>Phonebook has info for ${lukumaara} people.</h3>
@@ -106,7 +106,7 @@ puhLuettelo.put('/api/persons/:id', (request, response, next) => {
         name: body.name,
         number: body.number,
     }
-    Person.findByIdAndUpdate(request, params.id, person, { new: true })
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
