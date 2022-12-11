@@ -13,8 +13,15 @@ const url =
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minlength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    required: true
+  }
   //id: Number,
 })
 
@@ -46,6 +53,3 @@ if (!process.argv[3] == "" && !process.argv[4] == "") {
         mongoose.connection.close()
       })
 }
-
-
-
