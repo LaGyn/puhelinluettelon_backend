@@ -35,21 +35,21 @@ const person = new Person({
 })
 
 process.argv.forEach((val, index) => {
-    console.log(`${index}: ${val}`);
-  });
+  console.log(`${index}: ${val}`)
+})
 
 if (process.argv[2] && !process.argv[3] && !process.argv[4]){
-    Person.find({}).then(result => {
-        result.forEach(person => {
-            console.log(`${person.name} ${person.number}`)
-        })
-        mongoose.connection.close()
+  Person.find({}).then(result => {
+    result.forEach(person => {
+      console.log(`${person.name} ${person.number}`)
     })
+    mongoose.connection.close()
+  })
 }
 
-if (!process.argv[3] == "" && !process.argv[4] == "") {
-    person.save().then(result => {
-        console.log(`added ${person.name} number ${person.number} to phonebook`)
-        mongoose.connection.close()
-      })
+if (!process.argv[3] === '' && !process.argv[4] === '') {
+  person.save().then(result => {
+    console.log(`added ${person.name} number ${person.number} to phonebook`)
+    mongoose.connection.close()
+  })
 }
